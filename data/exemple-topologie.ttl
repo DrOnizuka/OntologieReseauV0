@@ -1,112 +1,333 @@
-@prefix res:  <http://example.org/reseau/v0#> .
-@prefix ex:   <http://example.org/reseau/v0/instances#> .
-@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
-
-# Petite topologie de démonstration :
-#   [Site Paris] héberge un routeur et un commutateur.
-#   Le routeur (R1) est relié au commutateur (SW1) par un lien filaire.
-#   Deux terminaux sont raccordés à SW1, dans le VLAN 10 / sous-réseau 192.168.10.0/24.
+@prefix res:     <http://example.org/reseau/v0#> .
+@prefix ex:      <http://example.org/reseau/v0/data/> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
 
 #################################################################
-#    Localisation
+#    Exemple de topologie réseau (ABox — Phase 4)
 #################################################################
+# Topologie simplifiée : deux sites avec équipements, liens, réseaux
+# Couvre les 19 questions de compétence (CQ1–CQ19)
+# Phase 3 formalisé en OWL — validation en phase 5 par SPARQL/SHACL
 
-ex:SiteParis a res:Site ;
-    res:nom "Datacenter Paris" .
+### --- SITES (CQ1, CQ11) ---
 
-#################################################################
-#    Réseaux logiques
-#################################################################
+ex:site-paris a res:Site ;
+    rdfs:label "Datacenter Paris"@fr ;
+    rdfs:comment "Site principal en Île-de-France"@fr .
 
-ex:VLAN10 a res:VLAN ;
-    res:nom "VLAN-Bureautique" ;
-    res:numeroVLAN 10 .
+ex:site-lyon a res:Site ;
+    rdfs:label "Site Lyon"@fr ;
+    rdfs:comment "Site secondaire en région Rhône-Alpes"@fr .
 
-ex:Subnet10 a res:SousReseau ;
-    res:nom "LAN Bureautique" ;
-    res:adresseReseau "192.168.10.0" ;
+### --- ZONES (CQ14) ---
+
+ex:zone-dmz a res:Zone ;
+    rdfs:label "DMZ"@fr ;
+    rdfs:comment "Zone démilitarisée exposée à Internet"@fr .
+
+ex:zone-lan-interne a res:Zone ;
+    rdfs:label "LAN Interne"@fr ;
+    rdfs:comment "Zone de réseau interne sécurisée"@fr .
+
+### --- ÉQUIPEMENTS (CQ1, CQ15) ---
+
+ex:router-paris a res:Routeur ;
+    rdfs:label "Routeur Paris 01"@fr ;
+    res:nom "RTR-PAR-01" ;
+    res:identifiant "RTR-PAR-01-SN12345" ;
+    res:fabricant "Cisco" ;
+    res:modele "ASR 1000" ;
+    res:versionLogiciel "IOS XE 17.3.1" ;
+    res:localiseA ex:site-paris ;
+    res:appartientAZone ex:zone-lan-interne ;
+    res:possedeInterface ex:router-paris-eth0, ex:router-paris-eth1 .
+
+ex:switch-paris a res:Commutateur ;
+    rdfs:label "Commutateur Paris 01"@fr ;
+    res:nom "SW-PAR-01" ;
+    res:identifiant "SW-PAR-01-SN67890" ;
+    res:fabricant "Arista" ;
+    res:modele "DCS 7050TX" ;
+    res:versionLogiciel "EOS 4.26.2F" ;
+    res:localiseA ex:site-paris ;
+    res:appartientAZone ex:zone-lan-interne ;
+    res:possedeInterface ex:switch-paris-eth0, ex:switch-paris-eth1, ex:switch-paris-eth2,
+                        ex:switch-paris-eth3, ex:switch-paris-eth4 .
+
+ex:server-web a res:Serveur ;
+    rdfs:label "Serveur Web"@fr ;
+    res:nom "WEB-SRV-01" ;
+    res:identifiant "WEB-SRV-01-UUID-12345" ;
+    res:fabricant "Dell" ;
+    res:modele "PowerEdge R750" ;
+    res:versionLogiciel "Ubuntu 20.04 LTS" ;
+    res:localiseA ex:site-paris ;
+    res:appartientAZone ex:zone-dmz ;
+    res:possedeInterface ex:server-web-eth0, ex:server-web-eth1 ;
+    res:fournitService ex:service-http, ex:service-https .
+
+ex:server-dns a res:Serveur ;
+    rdfs:label "Serveur DNS"@fr ;
+    res:nom "DNS-SRV-01" ;
+    res:identifiant "DNS-SRV-01-UUID-67890" ;
+    res:fabricant "Dell" ;
+    res:modele "PowerEdge R750" ;
+    res:versionLogiciel "Ubuntu 20.04 LTS" ;
+    res:localiseA ex:site-lyon ;
+    res:appartientAZone ex:zone-lan-interne ;
+    res:possedeInterface ex:server-dns-eth0 ;
+    res:fournitService ex:service-dns .
+
+ex:router-lyon a res:Routeur ;
+    rdfs:label "Routeur Lyon 01"@fr ;
+    res:nom "RTR-LYO-01" ;
+    res:identifiant "RTR-LYO-01-SN54321" ;
+    res:fabricant "Juniper" ;
+    res:modele "MX480" ;
+    res:versionLogiciel "Junos OS 22.1" ;
+    res:localiseA ex:site-lyon ;
+    res:appartientAZone ex:zone-lan-interne ;
+    res:possedeInterface ex:router-lyon-eth0 .
+
+### --- INTERFACES PHYSIQUES (CQ2, CQ18) ---
+
+ex:router-paris-eth0 a res:InterfacePhysique ;
+    rdfs:label "Eth0 Routeur Paris"@fr ;
+    res:nom "GigabitEthernet0/0/0" ;
+    res:numeroPort 1 ;
+    res:debitMbps 10000 ;
+    res:interfaceDe ex:router-paris ;
+    res:aAdresse ex:addr-router-paris-eth0 ;
+    res:appartientAuReseau ex:vlan-100 ;
+    res:connecteA ex:switch-paris-eth0 .
+
+ex:router-paris-eth1 a res:InterfacePhysique ;
+    rdfs:label "Eth1 Routeur Paris (WAN)"@fr ;
+    res:nom "GigabitEthernet0/0/1" ;
+    res:numeroPort 2 ;
+    res:debitMbps 1000 ;
+    res:interfaceDe ex:router-paris ;
+    res:aAdresse ex:addr-router-paris-eth1 ;
+    res:aExtremite ex:lien-wan-paris-lyon .
+
+ex:switch-paris-eth0 a res:InterfacePhysique ;
+    rdfs:label "Eth0 Commutateur Paris"@fr ;
+    res:nom "Ethernet1" ;
+    res:numeroPort 1 ;
+    res:debitMbps 10000 ;
+    res:interfaceDe ex:switch-paris ;
+    res:connecteA ex:router-paris-eth0 .
+
+ex:switch-paris-eth1 a res:InterfacePhysique ;
+    rdfs:label "Eth1 Commutateur Paris"@fr ;
+    res:nom "Ethernet2" ;
+    res:numeroPort 2 ;
+    res:debitMbps 10000 ;
+    res:interfaceDe ex:switch-paris ;
+    res:connecteA ex:server-web-eth0 .
+
+ex:switch-paris-eth2 a res:InterfacePhysique ;
+    rdfs:label "Eth2 Commutateur Paris"@fr ;
+    res:nom "Ethernet3" ;
+    res:numeroPort 3 ;
+    res:debitMbps 10000 ;
+    res:interfaceDe ex:switch-paris ;
+    res:connecteA ex:server-web-eth1 .
+
+ex:switch-paris-eth3 a res:InterfacePhysique ;
+    rdfs:label "Eth3 Commutateur Paris (libre)"@fr ;
+    res:nom "Ethernet4" ;
+    res:numeroPort 4 ;
+    res:debitMbps 10000 ;
+    res:interfaceDe ex:switch-paris .
+
+ex:switch-paris-eth4 a res:InterfacePhysique ;
+    rdfs:label "Eth4 Commutateur Paris (libre)"@fr ;
+    res:nom "Ethernet5" ;
+    res:numeroPort 5 ;
+    res:debitMbps 10000 ;
+    res:interfaceDe ex:switch-paris .
+
+ex:server-web-eth0 a res:InterfacePhysique ;
+    rdfs:label "Eth0 Serveur Web"@fr ;
+    res:nom "eth0" ;
+    res:debitMbps 1000 ;
+    res:interfaceDe ex:server-web ;
+    res:aAdresse ex:addr-server-web-eth0-v4, ex:addr-server-web-eth0-mac ;
+    res:appartientAuReseau ex:vlan-200 ;
+    res:connecteA ex:switch-paris-eth1 ;
+    res:porteePar ex:vlan-interface-web .
+
+ex:server-web-eth1 a res:InterfacePhysique ;
+    rdfs:label "Eth1 Serveur Web"@fr ;
+    res:nom "eth1" ;
+    res:debitMbps 1000 ;
+    res:interfaceDe ex:server-web ;
+    res:aAdresse ex:addr-server-web-eth1-mac ;
+    res:appartientAuReseau ex:vlan-300 ;
+    res:connecteA ex:switch-paris-eth2 .
+
+ex:server-dns-eth0 a res:InterfacePhysique ;
+    rdfs:label "Eth0 Serveur DNS"@fr ;
+    res:nom "eth0" ;
+    res:debitMbps 1000 ;
+    res:interfaceDe ex:server-dns ;
+    res:aAdresse ex:addr-server-dns-eth0-v4, ex:addr-server-dns-eth0-mac ;
+    res:appartientAuReseau ex:subnet-172-16 ;
+    res:porteePar ex:vlan-interface-dns .
+
+ex:router-lyon-eth0 a res:InterfacePhysique ;
+    rdfs:label "WAN Routeur Lyon"@fr ;
+    res:nom "ge-0/0/0" ;
+    res:debitMbps 1000 ;
+    res:interfaceDe ex:router-lyon ;
+    res:aExtremite ex:lien-wan-paris-lyon .
+
+### --- INTERFACES LOGIQUES (CQ17) ---
+
+ex:vlan-interface-web a res:InterfaceLogique ;
+    rdfs:label "VLAN Interface Web"@fr ;
+    res:nom "vlan.200" ;
+    res:interfaceDe ex:server-web ;
+    res:porteePar ex:server-web-eth0 ;
+    res:appartientAuReseau ex:vlan-200 ;
+    res:aAdresse ex:addr-vlan-web-v6 .
+
+ex:vlan-interface-dns a res:InterfaceLogique ;
+    rdfs:label "VLAN Interface DNS"@fr ;
+    res:nom "vlan.10" ;
+    res:interfaceDe ex:server-dns ;
+    res:porteePar ex:server-dns-eth0 ;
+    res:appartientAuReseau ex:vlan-10 .
+
+### --- LIENS (CQ3, CQ11, CQ19) ---
+
+ex:lien-lan-paris a res:LienLAN ;
+    rdfs:label "Lien LAN Routeur-Commutateur Paris"@fr ;
+    res:nom "LAN-PAR-RTR-SW" ;
+    res:debitMbps 10000 ;
+    res:typeSupport "fibre-monomode" ;
+    res:aExtremite ex:router-paris-eth0, ex:switch-paris-eth0 .
+
+ex:lien-wan-paris-lyon a res:LienWAN ;
+    rdfs:label "Lien WAN Paris-Lyon"@fr ;
+    res:nom "WAN-PAR-LYO" ;
+    res:debitMbps 1000 ;
+    res:typeSupport "fibre-monomode" ;
+    res:aExtremite ex:router-paris-eth1, ex:router-lyon-eth0 .
+
+### --- RÉSEAUX LOGIQUES ---
+
+ex:subnet-10-0-0-0 a res:SousReseau ;
+    rdfs:label "Subnet 10.0.0.0/24"@fr ;
+    res:nom "10.0.0.0/24" ;
+    res:adresseReseau "10.0.0.0" ;
     res:prefixeCIDR 24 .
 
-#################################################################
-#    Équipements
-#################################################################
+ex:subnet-192-168-100-0 a res:SousReseau ;
+    rdfs:label "Subnet 192.168.100.0/25"@fr ;
+    res:nom "192.168.100.0/25" ;
+    res:adresseReseau "192.168.100.0" ;
+    res:prefixeCIDR 25 .
 
-ex:R1 a res:Routeur ;
-    res:nom "R1-PARIS" ;
-    res:fabricant "Cisco" ;
-    res:modele "ISR 4321" ;
-    res:actif true ;
-    res:localiseA ex:SiteParis ;
-    res:possedeInterface ex:R1-Gi0-0 .
+ex:subnet-192-168-101-0 a res:SousReseau ;
+    rdfs:label "Subnet 192.168.101.0/25"@fr ;
+    res:nom "192.168.101.0/25" ;
+    res:adresseReseau "192.168.101.0" ;
+    res:prefixeCIDR 25 .
 
-ex:SW1 a res:Commutateur ;
-    res:nom "SW1-PARIS" ;
-    res:fabricant "Cisco" ;
-    res:modele "Catalyst 9200" ;
-    res:actif true ;
-    res:localiseA ex:SiteParis ;
-    res:possedeInterface ex:SW1-Gi1-0-1 , ex:SW1-Gi1-0-2 , ex:SW1-Gi1-0-24 .
+ex:subnet-172-16 a res:SousReseau ;
+    rdfs:label "Subnet 172.16.0.0/16"@fr ;
+    res:nom "172.16.0.0/16" ;
+    res:adresseReseau "172.16.0.0" ;
+    res:prefixeCIDR 16 .
 
-ex:PC1 a res:Terminal ;
-    res:nom "poste-marketing-01" ;
-    res:possedeInterface ex:PC1-eth0 .
+ex:vlan-10 a res:VLAN ;
+    rdfs:label "VLAN 10 (Management)"@fr ;
+    res:nom "VLAN 10" ;
+    res:numeroVLAN 10 .
 
-ex:PC2 a res:Terminal ;
-    res:nom "poste-marketing-02" ;
-    res:possedeInterface ex:PC2-eth0 .
+ex:vlan-100 a res:VLAN ;
+    rdfs:label "VLAN 100 (LAN)"@fr ;
+    res:nom "VLAN 100" ;
+    res:numeroVLAN 100 .
 
-#################################################################
-#    Interfaces + adresses
-#################################################################
+ex:vlan-200 a res:VLAN ;
+    rdfs:label "VLAN 200 (DMZ)"@fr ;
+    res:nom "VLAN 200" ;
+    res:numeroVLAN 200 .
 
-ex:R1-Gi0-0 a res:InterfacePhysique ;
-    res:nom "GigabitEthernet0/0" ;
-    res:numeroPort 1 ;
-    res:debitMbps 1000 ;
-    res:appartientAuReseau ex:Subnet10 ;
-    res:aAdresse ex:ipR1 , ex:macR1 ;
-    res:connecteA ex:SW1-Gi1-0-24 .
+ex:vlan-300 a res:VLAN ;
+    rdfs:label "VLAN 300 (Backup)"@fr ;
+    res:nom "VLAN 300" ;
+    res:numeroVLAN 300 .
 
-ex:SW1-Gi1-0-24 a res:InterfacePhysique ;
-    res:nom "GigabitEthernet1/0/24" ;
-    res:numeroPort 24 ;
-    res:debitMbps 1000 ;
-    res:connecteA ex:R1-Gi0-0 .
+### --- ADRESSES (CQ5, CQ7, CQ16) ---
 
-ex:SW1-Gi1-0-1 a res:InterfacePhysique ;
-    res:nom "GigabitEthernet1/0/1" ;
-    res:numeroPort 1 ;
-    res:appartientAuReseau ex:VLAN10 .
+ex:addr-router-paris-eth0 a res:AdresseIPv4 ;
+    rdfs:label "10.0.0.1"@fr ;
+    res:valeurAdresse "10.0.0.1" ;
+    res:appartientAuReseau ex:subnet-10-0-0-0 .
 
-ex:SW1-Gi1-0-2 a res:InterfacePhysique ;
-    res:nom "GigabitEthernet1/0/2" ;
-    res:numeroPort 2 ;
-    res:appartientAuReseau ex:VLAN10 .
+ex:addr-router-paris-eth1 a res:AdresseIPv4 ;
+    rdfs:label "200.1.1.1"@fr ;
+    res:valeurAdresse "200.1.1.1" .
 
-ex:PC1-eth0 a res:InterfacePhysique ;
-    res:nom "eth0" ;
-    res:appartientAuReseau ex:Subnet10 , ex:VLAN10 ;
-    res:aAdresse ex:ipPC1 ;
-    res:connecteA ex:SW1-Gi1-0-1 .
+ex:addr-server-web-eth0-v4 a res:AdresseIPv4 ;
+    rdfs:label "192.168.100.10"@fr ;
+    res:valeurAdresse "192.168.100.10" ;
+    res:appartientAuReseau ex:subnet-192-168-100-0 .
 
-ex:PC2-eth0 a res:InterfacePhysique ;
-    res:nom "eth0" ;
-    res:appartientAuReseau ex:Subnet10 , ex:VLAN10 ;
-    res:aAdresse ex:ipPC2 ;
-    res:connecteA ex:SW1-Gi1-0-2 .
+ex:addr-server-dns-eth0-v4 a res:AdresseIPv4 ;
+    rdfs:label "172.16.1.1"@fr ;
+    res:valeurAdresse "172.16.1.1" ;
+    res:appartientAuReseau ex:subnet-172-16 .
 
-ex:ipR1  a res:AdresseIPv4 ; res:valeurAdresse "192.168.10.1" .
-ex:ipPC1 a res:AdresseIPv4 ; res:valeurAdresse "192.168.10.11" .
-ex:ipPC2 a res:AdresseIPv4 ; res:valeurAdresse "192.168.10.12" .
-ex:macR1 a res:AdresseMAC  ; res:valeurAdresse "00:1A:2B:3C:4D:5E" .
+ex:addr-vlan-web-v6 a res:AdresseIPv6 ;
+    rdfs:label "2001:db8::1"@fr ;
+    res:valeurAdresse "2001:db8::1" .
 
-#################################################################
-#    Lien physique
-#################################################################
+ex:addr-server-web-eth0-mac a res:AdresseMAC ;
+    rdfs:label "00:1A:2B:3C:4D:5E"@fr ;
+    res:valeurAdresse "00:1A:2B:3C:4D:5E" .
 
-ex:Lien-R1-SW1 a res:LienFilaire ;
-    res:nom "Uplink R1 <-> SW1" ;
-    res:debitMbps 1000 ;
-    res:aExtremite ex:R1-Gi0-0 , ex:SW1-Gi1-0-24 .
+ex:addr-server-web-eth1-mac a res:AdresseMAC ;
+    rdfs:label "00:1A:2B:3C:4D:5F"@fr ;
+    res:valeurAdresse "00:1A:2B:3C:4D:5F" .
+
+ex:addr-server-dns-eth0-mac a res:AdresseMAC ;
+    rdfs:label "00:1A:2B:3C:4D:60"@fr ;
+    res:valeurAdresse "00:1A:2B:3C:4D:60" .
+
+### --- SERVICES (CQ12, CQ13) ---
+
+ex:service-http a res:Service ;
+    rdfs:label "HTTP"@fr ;
+    res:nom "HTTP" ;
+    res:utiliseProtocole ex:proto-http .
+
+ex:service-https a res:Service ;
+    rdfs:label "HTTPS"@fr ;
+    res:nom "HTTPS" ;
+    res:utiliseProtocole ex:proto-https .
+
+ex:service-dns a res:Service ;
+    rdfs:label "DNS"@fr ;
+    res:nom "DNS" ;
+    res:utiliseProtocole ex:proto-dns .
+
+### --- PROTOCOLES (CQ13) ---
+
+ex:proto-http a res:Protocole ;
+    rdfs:label "HTTP"@fr ;
+    res:nom "HTTP" .
+
+ex:proto-https a res:Protocole ;
+    rdfs:label "HTTPS"@fr ;
+    res:nom "HTTPS" .
+
+ex:proto-dns a res:Protocole ;
+    rdfs:label "DNS"@fr ;
+    res:nom "DNS" .
