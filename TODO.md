@@ -51,5 +51,8 @@ la [feuille de route](docs/feuille-de-route.md)). Cocher une fois faites.
 
 ## Sécurité
 
-- [ ] **Révoquer et régénérer le token GitHub** exposé en conversation, puis
-  mettre à jour `.env` (idéalement un token *fine-grained* limité au repo).
+- [ ] **Révoquer et régénérer le token GitHub** exposé en conversation.
+- [ ] **Migrer l'authentification** vers SSH (recommandé) ou un credential helper
+  git, en suivant la section *Setup* du skill `git-push-secure`. Une fois fait,
+  le token dans `.env` n'est plus nécessaire pour pousser → **retirer
+  `GIT_PASSWORD` du `.env`**.
