@@ -5,6 +5,18 @@ en travail d'équipe. Ce fichier est la référence à charger avant toute actio
 Il **résume** les règles ; la source de vérité détaillée est
 `docs/consignes-construction.md`.
 
+## ▶️ Démarrer une session
+
+**Avant toute chose, à chaque nouvelle session :**
+1. Lire **`TODO.md`** (tâches en attente + avancement des phases).
+2. Lire **`docs/feuille-de-route.md`** pour situer la phase en cours.
+3. Ouvrir la **fiche de la phase courante** (`docs/phases/phase-N-*.md`) et
+   reprendre à la première tâche non faite.
+4. Traiter les TODO **dans l'ordre**, en respectant la règle « une phase à la
+   fois, jalon validé avant d'ouvrir la suivante ».
+5. Mettre à jour statut + `TODO.md` au fur et à mesure ; ne rien committer sans
+   demande explicite.
+
 ## Règles non négociables
 
 1. **Plafond : ≤ 50 concepts** = `classes + ObjectProperties` (les
@@ -63,9 +75,10 @@ PY
 
 ## Statut
 
-**Phase 0–1 non encore formalisées** (cadrage + étude de l'existant). Le
-`.ttl` présent (37 concepts) est un **brouillon exploratoire**, pas la V0
-validée. Voir la feuille de route pour l'ordre des étapes.
+**Phase 0 (cadrage) en cours** : périmètre et utilisateurs cibles arrêtés, il
+reste à valider les questions de compétence. Le `.ttl` présent (37 concepts)
+est un **brouillon exploratoire** à reprendre en phases 2–3, pas la V0 validée.
+Voir `TODO.md` et `docs/feuille-de-route.md`.
 
 ## Pratiques du projet
 

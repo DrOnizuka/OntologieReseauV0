@@ -7,6 +7,8 @@ localisation et services.
 Format : **OWL 2 / RDF sérialisé en Turtle**, éditable avec [Protégé](https://protege.stanford.edu/)
 et interrogeable en **SPARQL**.
 
+> **Reprendre le travail :** consulter [`TODO.md`](TODO.md) (tâches en attente et avancement des phases) puis la [feuille de route](docs/feuille-de-route.md) — on avance **une phase à la fois**.
+
 ## Structure du dépôt
 
 | Dossier / fichier              | Contenu |

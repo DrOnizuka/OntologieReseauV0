@@ -10,7 +10,7 @@ Chaque phase dispose d'un document de travail dédié dans `docs/phases/`.
 
 | # | Phase | Fiche de travail | Jalon de validation | Statut |
 |---|-------|------------------|---------------------|--------|
-| 0 | Cadrage & spécification (ORSD) | [phase-0-cadrage.md](phases/phase-0-cadrage.md) | Spécification validée : périmètre + CQ + utilisateurs | ⬜ À faire |
+| 0 | Cadrage & spécification (ORSD) | [phase-0-cadrage.md](phases/phase-0-cadrage.md) | Spécification validée : périmètre + CQ + utilisateurs | 🟡 En cours |
 | 1 | Étude de l'existant & réutilisation | [phase-1-existant.md](phases/phase-1-existant.md) | Tableau des sources décidé (reprise/écartée + raison) | ⬜ À faire |
 | 2 | Conceptualisation (modèle informel) | [phase-2-conceptualisation.md](phases/phase-2-conceptualisation.md) | Modèle validé, ≤ 50 concepts, 0 hors-périmètre | ⬜ À faire |
 | 3 | Formalisation OWL (Turtle) | [phase-3-formalisation.md](phases/phase-3-formalisation.md) | `.ttl` parse + raisonneur *consistent* | ⬜ À faire |
