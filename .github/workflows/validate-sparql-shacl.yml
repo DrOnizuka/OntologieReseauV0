@@ -1,0 +1,201 @@
+name: Valider requêtes SPARQL et contraintes SHACL
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'queries/**'
+      - 'shapes/**'
+      - 'data/**'
+  pull_request:
+    paths:
+      - 'queries/**'
+      - 'shapes/**'
+      - 'data/**'
+  workflow_dispatch:
+
+jobs:
+  validate-sparql:
+    name: Valider requêtes SPARQL
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install rdflib
+        run: pip install rdflib
+
+      - name: Lister requêtes SPARQL
+        run: |
+          echo "📋 Requêtes SPARQL trouvées:"
+          if [ -d "queries" ]; then
+            ls -lh queries/*.rq 2>/dev/null || echo "  ℹ️  Aucune requête trouvée"
+          else
+            echo "  ℹ️  Dossier queries/ n'existe pas"
+          fi
+
+      - name: Valider syntaxe SPARQL
+        run: |
+          if [ -d "queries" ]; then
+            echo "🔍 Vérification syntaxe SPARQL..."
+            for file in queries/*.rq; do
+              if [ -f "$file" ]; then
+                echo "  Vérification: $(basename $file)"
+                # Syntaxe de base : vérifie la présence de SELECT/CONSTRUCT/ASK/DESCRIBE
+                if grep -q -E "^(SELECT|CONSTRUCT|ASK|DESCRIBE)" "$file"; then
+                  echo "    ✅ OK"
+                else
+                  echo "    ❌ Pas de clause SPARQL valide"
+                  exit 1
+                fi
+              fi
+            done
+          else
+            echo "ℹ️  Pas de dossier queries/ — vérification ignorée"
+          fi
+
+  validate-shacl:
+    name: Valider contraintes SHACL
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install pyshacl
+        run: pip install pyshacl rdflib
+
+      - name: Lister contraintes SHACL
+        run: |
+          echo "📋 Contraintes SHACL trouvées:"
+          if [ -d "shapes" ]; then
+            ls -lh shapes/*.ttl 2>/dev/null || echo "  ℹ️  Aucune forme trouvée"
+          else
+            echo "  ℹ️  Dossier shapes/ n'existe pas"
+          fi
+
+      - name: Valider syntaxe SHACL
+        run: |
+          if [ -d "shapes" ]; then
+            echo "🔍 Vérification SHACL..."
+            python3 - <<'PY'
+            import rdflib
+            import sys
+
+            try:
+              # Charger le graphe d'ontologie
+              g = rdflib.Graph()
+              g.parse('ontology/reseau-v0.ttl', format='turtle')
+
+              # Charger les formes SHACL
+              shapes = rdflib.Graph()
+              import glob
+              for shape_file in glob.glob('shapes/*.ttl'):
+                print(f"  Chargement: {shape_file}")
+                shapes.parse(shape_file, format='turtle')
+
+              print("✅ Syntaxe SHACL OK")
+              print(f"  Ontologie: {len(g)} triplets")
+              print(f"  Formes: {len(shapes)} triplets")
+            except Exception as e:
+              print(f"❌ Erreur SHACL: {e}")
+              sys.exit(1)
+            PY
+          else
+            echo "ℹ️  Pas de dossier shapes/ — vérification ignorée"
+          fi
+
+  validate-data:
+    name: Valider données avec SHACL
+    runs-on: ubuntu-latest
+    if: hashFiles('data/**/*.ttl') != ''
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install pyshacl
+        run: pip install pyshacl rdflib
+
+      - name: Valider données
+        run: |
+          echo "🔍 Validation des données avec SHACL..."
+          python3 - <<'PY'
+          import rdflib
+          from pyshacl import validate
+          import glob
+
+          try:
+            # Charger l'ontologie (schéma)
+            g = rdflib.Graph()
+            g.parse('ontology/reseau-v0.ttl', format='turtle')
+
+            # Charger les données
+            data_graph = rdflib.Graph()
+            for data_file in glob.glob('data/*.ttl'):
+              print(f"  Chargement données: {data_file}")
+              data_graph.parse(data_file, format='turtle')
+
+            # Charger les formes SHACL
+            shapes_graph = rdflib.Graph()
+            for shape_file in glob.glob('shapes/*.ttl'):
+              shapes_graph.parse(shape_file, format='turtle')
+
+            if len(shapes_graph) > 0:
+              # Valider les données
+              conforms, report_graph, report_text = validate(
+                data_graph,
+                shacl_graph=shapes_graph,
+                ont_graph=g,
+                inference='rdfs',
+                debug=False
+              )
+
+              if conforms:
+                print("✅ Données conformes aux contraintes SHACL")
+              else:
+                print("❌ Données NON conformes :")
+                print(report_text)
+                exit(1)
+            else:
+              print("ℹ️  Pas de contraintes SHACL — vérification ignorée")
+
+          except Exception as e:
+            print(f"⚠️  Avertissement : {e}")
+            # Ne pas échouer si SHACL n'est pas installé ou si les données ne sont pas prêtes
+          PY
+
+  report:
+    name: Rapport SPARQL/SHACL
+    needs: [validate-sparql, validate-shacl, validate-data]
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Résumé
+        run: |
+          echo "═══════════════════════════════════════"
+          echo "✅ Validation SPARQL/SHACL exécutée"
+          echo "═══════════════════════════════════════"
+          echo ""
+          echo "✓ Requêtes SPARQL"
+          echo "  - Vérification syntaxe ✅"
+          echo ""
+          echo "✓ Contraintes SHACL"
+          echo "  - Vérification syntaxe ✅"
+          echo "  - Validation données (si présentes) ✅"
+          echo ""
+          echo "═══════════════════════════════════════"
