@@ -14,10 +14,10 @@ la [feuille de route](docs/feuille-de-route.md)). Cocher une fois faites.
 - [x] **Phase 1 — Étude de l'existant & réutilisation** : tableau des sources
   arrêté le 2026-08-27, stratégie d'**alignement léger** retenue
   (voir [`docs/phases/phase-1-existant.md`](docs/phases/phase-1-existant.md)). → *phase 1 (✅ validée)*.
-- [ ] **Phase 2 — Conceptualisation** *(prochaine étape)* : modèle informel (glossaire, concepts,
-  relations, schéma), contrôle du plafond ≤ 50 et du périmètre. Réécrire `docs/modele.md`.
-  Appliquer les **décisions de modélisation** arrêtées en phase 0 (retraits sans-fil
-  + `LienFilaire`, ajout `LienLAN`/`LienWAN`, `porteePar`, `typeSupport`) — budget cible 37/50.
+- [x] **Phase 2 — Conceptualisation** ✅ (2026-08-27) : modèle conceptuel finalisé dans `docs/modele.md`.
+  Glossaire, concepts, relations, attributs, schéma Mermaid, traçabilité CQ, contrôle du plafond (37/50) et du périmètre.
+  Décisions de modélisation appliquées (retraits sans-fil + `LienFilaire`, ajout `LienLAN`/`LienWAN`, `porteePar`, `typeSupport`).
+  **Jalon : prêt pour phase 3 (formalisation OWL)**.
 - [ ] **Phase 3 — Formalisation OWL** : reprendre/valider `ontology/reseau-v0.ttl`
   (parse + raisonneur *consistent*).
 - [ ] **Phase 4 — Peuplement d'exemple** : mettre `data/` en cohérence avec le modèle validé.
@@ -32,9 +32,7 @@ la [feuille de route](docs/feuille-de-route.md)). Cocher une fois faites.
 
 ## Suites de la validation des CQ (phase 0 → phases 2-3-4)
 
-- [ ] **Trancher le sort de `actif`** (DatatypeProperty) : aucune CQ ne le
-  couvre depuis que la CQ « éléments hors service » a été écartée. Le retirer,
-  ou le justifier par une CQ. La règle « pas de propriété sans ≥ 1 CQ » s'applique. → *phase 2*.
+- [x] **Trancher le sort de `actif`** (DatatypeProperty) — **RETIRÉ** en phase 2. Aucune CQ le couvre ; la règle « pas de propriété sans ≥ 1 CQ » s'applique. Ne sera jamais ajouté à `ontology/reseau-v0.ttl`.
 - [ ] **Désambiguïser `numeroPort`** : le brouillon l'emploie pour le port
   physique (`InterfacePhysique`), alors que CQ13 réclame le **port de transport**
   d'un service. Deux propriétés distinctes, nommées sans ambiguïté. → *phase 3*.
