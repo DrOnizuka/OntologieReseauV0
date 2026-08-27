@@ -1,0 +1,70 @@
+# Exemples de requêtes SPARQL sur l'ontologie Réseau V0
+# ------------------------------------------------------
+# Charger dans le même dépôt (triplestore / Protégé « SPARQL Query ») :
+#   - ontology/reseau-v0.ttl
+#   - data/exemple-topologie.ttl
+#
+# Chaque requête est indépendante : copier/coller le PREFIX + la requête voulue.
+
+PREFIX res:  <http://example.org/reseau/v0#>
+PREFIX rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+# =====================================================================
+# Q1 — Lister tous les équipements avec leur type et leur site
+# =====================================================================
+SELECT ?equipement ?type ?nom ?site WHERE {
+  ?equipement a ?type .
+  ?type rdfs:subClassOf* res:Equipement .
+  OPTIONAL { ?equipement res:nom ?nom }
+  OPTIONAL { ?equipement res:localiseA ?site }
+}
+ORDER BY ?type
+
+# =====================================================================
+# Q2 — Toutes les interfaces d'un équipement donné (R1) + leurs adresses
+# =====================================================================
+# SELECT ?interface ?nomIf ?adresse WHERE {
+#   ?equipement res:nom "R1-PARIS" ;
+#               res:possedeInterface ?interface .
+#   OPTIONAL { ?interface res:nom ?nomIf }
+#   OPTIONAL { ?interface res:aAdresse/res:valeurAdresse ?adresse }
+# }
+
+# =====================================================================
+# Q3 — Interfaces membres du VLAN 10
+# =====================================================================
+# SELECT ?interface ?nomIf WHERE {
+#   ?vlan a res:VLAN ; res:numeroVLAN 10 .
+#   ?interface res:appartientAuReseau ?vlan .
+#   OPTIONAL { ?interface res:nom ?nomIf }
+# }
+
+# =====================================================================
+# Q4 — Liens et leurs deux extrémités (interface + équipement porteur)
+# =====================================================================
+# SELECT ?lien ?interface ?equipement WHERE {
+#   ?lien a res:Lien ;
+#         res:aExtremite ?interface .
+#   OPTIONAL { ?interface res:interfaceDe ?equipement }
+# }
+# ORDER BY ?lien
+
+# =====================================================================
+# Q5 — Adjacences directes entre équipements (via connecteA)
+# =====================================================================
+# SELECT DISTINCT ?equipA ?equipB WHERE {
+#   ?ifA res:connecteA ?ifB .
+#   ?equipA res:possedeInterface ?ifA .
+#   ?equipB res:possedeInterface ?ifB .
+#   FILTER(STR(?equipA) < STR(?equipB))   # éviter les doublons symétriques
+# }
+
+# =====================================================================
+# Q6 — Toutes les adresses IPv4 utilisées et l'interface qui les porte
+# =====================================================================
+# SELECT ?ip ?interface WHERE {
+#   ?adr a res:AdresseIPv4 ; res:valeurAdresse ?ip .
+#   ?interface res:aAdresse ?adr .
+# }
+# ORDER BY ?ip

@@ -1,0 +1,320 @@
+@prefix res:     <http://example.org/reseau/v0#> .
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix skos:    <http://www.w3.org/2004/02/skos/core#> .
+
+#################################################################
+#    En-tête de l'ontologie
+#################################################################
+
+<http://example.org/reseau/v0> a owl:Ontology ;
+    owl:versionIRI <http://example.org/reseau/v0/0.1.0> ;
+    owl:versionInfo "0.1.0" ;
+    dcterms:title "Ontologie Réseau V0"@fr ;
+    dcterms:description """Ontologie de description d'un réseau informatique / télécom :
+équipements, interfaces, liens, réseaux logiques (sous-réseaux, VLAN),
+adresses, protocoles, services et localisation.
+Version initiale (V0) — socle destiné à être discuté et enrichi en équipe."""@fr ;
+    dcterms:created "2026-08-27"^^xsd:date ;
+    dcterms:license <https://creativecommons.org/licenses/by/4.0/> .
+
+# NOTE ÉQUIPE : l'espace de noms http://example.org/reseau/v0# est un PLACEHOLDER.
+# À remplacer par un IRI pérenne (ex. https://w3id.org/...) une fois validé.
+# Voir CONTRIBUTING.md § « Espace de noms ».
+
+#################################################################
+#    Classes — Hiérarchie principale
+#################################################################
+
+res:ElementReseau a owl:Class ;
+    rdfs:label "Élément de réseau"@fr ;
+    rdfs:comment "Concept racine : toute entité participant au réseau (équipement, interface, lien, réseau logique...)."@fr .
+
+### --- Équipements -------------------------------------------------
+
+res:Equipement a owl:Class ;
+    rdfs:subClassOf res:ElementReseau ;
+    rdfs:label "Équipement"@fr ;
+    rdfs:comment "Dispositif physique ou virtuel raccordé au réseau."@fr .
+
+res:Routeur a owl:Class ;
+    rdfs:subClassOf res:Equipement ;
+    rdfs:label "Routeur"@fr ;
+    rdfs:comment "Équipement assurant le routage entre réseaux (couche 3)."@fr .
+
+res:Commutateur a owl:Class ;
+    rdfs:subClassOf res:Equipement ;
+    rdfs:label "Commutateur"@fr ;
+    skos:altLabel "Switch"@en ;
+    rdfs:comment "Équipement de commutation de trames (couche 2)."@fr .
+
+res:PareFeu a owl:Class ;
+    rdfs:subClassOf res:Equipement ;
+    rdfs:label "Pare-feu"@fr ;
+    skos:altLabel "Firewall"@en ;
+    rdfs:comment "Équipement de filtrage et de contrôle du trafic entre zones."@fr .
+
+res:Serveur a owl:Class ;
+    rdfs:subClassOf res:Equipement ;
+    rdfs:label "Serveur"@fr ;
+    rdfs:comment "Hôte fournissant un ou plusieurs services réseau."@fr .
+
+res:PointAccesSansFil a owl:Class ;
+    rdfs:subClassOf res:Equipement ;
+    rdfs:label "Point d'accès sans fil"@fr ;
+    skos:altLabel "Access Point"@en ;
+    rdfs:comment "Équipement offrant une connectivité radio (Wi-Fi)."@fr .
+
+res:Terminal a owl:Class ;
+    rdfs:subClassOf res:Equipement ;
+    rdfs:label "Terminal"@fr ;
+    skos:altLabel "Hôte terminal"@fr ;
+    rdfs:comment "Équipement d'extrémité utilisé par un usager (poste de travail, portable, téléphone IP...)."@fr .
+
+[] a owl:AllDisjointClasses ;
+    owl:members ( res:Routeur res:Commutateur res:PareFeu res:Serveur res:PointAccesSansFil res:Terminal ) .
+
+### --- Interfaces --------------------------------------------------
+
+res:Interface a owl:Class ;
+    rdfs:subClassOf res:ElementReseau ;
+    rdfs:label "Interface"@fr ;
+    rdfs:comment "Point de connexion d'un équipement au réseau (physique ou logique)."@fr .
+
+res:InterfacePhysique a owl:Class ;
+    rdfs:subClassOf res:Interface ;
+    rdfs:label "Interface physique"@fr ;
+    rdfs:comment "Port matériel (ex. GigabitEthernet, port SFP)."@fr .
+
+res:InterfaceLogique a owl:Class ;
+    rdfs:subClassOf res:Interface ;
+    rdfs:label "Interface logique"@fr ;
+    rdfs:comment "Interface virtuelle (ex. sous-interface, VLAN interface, loopback)."@fr .
+
+res:Interface owl:disjointWith res:Equipement .
+
+### --- Liens -------------------------------------------------------
+
+res:Lien a owl:Class ;
+    rdfs:subClassOf res:ElementReseau ;
+    rdfs:label "Lien"@fr ;
+    rdfs:comment "Connexion reliant deux interfaces."@fr .
+
+res:LienFilaire a owl:Class ;
+    rdfs:subClassOf res:Lien ;
+    rdfs:label "Lien filaire"@fr ;
+    rdfs:comment "Lien s'appuyant sur un support câblé (cuivre, fibre)."@fr .
+
+res:LienSansFil a owl:Class ;
+    rdfs:subClassOf res:Lien ;
+    rdfs:label "Lien sans fil"@fr ;
+    rdfs:comment "Lien radio (Wi-Fi, faisceau hertzien...)."@fr .
+
+### --- Réseaux logiques -------------------------------------------
+
+res:Reseau a owl:Class ;
+    rdfs:subClassOf res:ElementReseau ;
+    rdfs:label "Réseau"@fr ;
+    rdfs:comment "Regroupement logique d'interfaces / d'adresses."@fr .
+
+res:SousReseau a owl:Class ;
+    rdfs:subClassOf res:Reseau ;
+    rdfs:label "Sous-réseau"@fr ;
+    skos:altLabel "Subnet"@en ;
+    rdfs:comment "Plage d'adressage IP définie par un préfixe (ex. 192.168.10.0/24)."@fr .
+
+res:VLAN a owl:Class ;
+    rdfs:subClassOf res:Reseau ;
+    rdfs:label "VLAN"@fr ;
+    rdfs:comment "Réseau local virtuel (couche 2) identifié par un numéro (802.1Q)."@fr .
+
+### --- Adresses ----------------------------------------------------
+
+res:Adresse a owl:Class ;
+    rdfs:subClassOf res:ElementReseau ;
+    rdfs:label "Adresse"@fr ;
+    rdfs:comment "Identifiant d'adressage porté par une interface."@fr .
+
+res:AdresseIP a owl:Class ;
+    rdfs:subClassOf res:Adresse ;
+    rdfs:label "Adresse IP"@fr ;
+    rdfs:comment "Adresse de couche 3 (IPv4 ou IPv6)."@fr .
+
+res:AdresseIPv4 a owl:Class ;
+    rdfs:subClassOf res:AdresseIP ;
+    rdfs:label "Adresse IPv4"@fr .
+
+res:AdresseIPv6 a owl:Class ;
+    rdfs:subClassOf res:AdresseIP ;
+    rdfs:label "Adresse IPv6"@fr .
+
+res:AdresseMAC a owl:Class ;
+    rdfs:subClassOf res:Adresse ;
+    rdfs:label "Adresse MAC"@fr ;
+    rdfs:comment "Adresse matérielle de couche 2."@fr .
+
+[] a owl:AllDisjointClasses ;
+    owl:members ( res:AdresseIPv4 res:AdresseIPv6 res:AdresseMAC ) .
+
+### --- Autres concepts --------------------------------------------
+
+res:Protocole a owl:Class ;
+    rdfs:subClassOf res:ElementReseau ;
+    rdfs:label "Protocole"@fr ;
+    rdfs:comment "Protocole de communication (ex. OSPF, BGP, HTTPS, DNS)."@fr .
+
+res:Service a owl:Class ;
+    rdfs:subClassOf res:ElementReseau ;
+    rdfs:label "Service"@fr ;
+    rdfs:comment "Service applicatif exposé sur le réseau (ex. serveur web, DNS, DHCP)."@fr .
+
+res:Site a owl:Class ;
+    rdfs:label "Site"@fr ;
+    rdfs:comment "Localisation physique hébergeant des équipements (bâtiment, salle, datacenter)."@fr .
+
+res:Zone a owl:Class ;
+    rdfs:label "Zone de sécurité"@fr ;
+    rdfs:comment "Zone logique de confiance (ex. DMZ, LAN interne, WAN)."@fr .
+
+#################################################################
+#    Propriétés d'objet
+#################################################################
+
+res:possedeInterface a owl:ObjectProperty ;
+    rdfs:label "possède l'interface"@fr ;
+    rdfs:domain res:Equipement ;
+    rdfs:range res:Interface ;
+    owl:inverseOf res:interfaceDe ;
+    rdfs:comment "Relie un équipement à l'une de ses interfaces."@fr .
+
+res:interfaceDe a owl:ObjectProperty , owl:FunctionalProperty ;
+    rdfs:label "est interface de"@fr ;
+    rdfs:domain res:Interface ;
+    rdfs:range res:Equipement ;
+    rdfs:comment "Une interface appartient à exactement un équipement."@fr .
+
+res:aExtremite a owl:ObjectProperty ;
+    rdfs:label "a pour extrémité"@fr ;
+    rdfs:domain res:Lien ;
+    rdfs:range res:Interface ;
+    rdfs:comment "Interface reliée par un lien (un lien a typiquement deux extrémités)."@fr .
+
+res:connecteA a owl:ObjectProperty , owl:SymmetricProperty ;
+    rdfs:label "connecté à"@fr ;
+    rdfs:domain res:Interface ;
+    rdfs:range res:Interface ;
+    rdfs:comment "Adjacence directe entre deux interfaces (relation symétrique)."@fr .
+
+res:appartientAuReseau a owl:ObjectProperty ;
+    rdfs:label "appartient au réseau"@fr ;
+    rdfs:domain res:Interface ;
+    rdfs:range res:Reseau ;
+    rdfs:comment "Rattache une interface à un réseau logique (sous-réseau, VLAN)."@fr .
+
+res:aAdresse a owl:ObjectProperty ;
+    rdfs:label "a pour adresse"@fr ;
+    rdfs:domain res:Interface ;
+    rdfs:range res:Adresse ;
+    rdfs:comment "Adresse (IP ou MAC) portée par une interface."@fr .
+
+res:localiseA a owl:ObjectProperty , owl:FunctionalProperty ;
+    rdfs:label "localisé à"@fr ;
+    rdfs:domain res:Equipement ;
+    rdfs:range res:Site ;
+    owl:inverseOf res:heberge ;
+    rdfs:comment "Site physique hébergeant l'équipement."@fr .
+
+res:heberge a owl:ObjectProperty ;
+    rdfs:label "héberge"@fr ;
+    rdfs:domain res:Site ;
+    rdfs:range res:Equipement .
+
+res:appartientAZone a owl:ObjectProperty ;
+    rdfs:label "appartient à la zone"@fr ;
+    rdfs:domain res:Equipement ;
+    rdfs:range res:Zone ;
+    rdfs:comment "Zone de sécurité de rattachement de l'équipement."@fr .
+
+res:fournitService a owl:ObjectProperty ;
+    rdfs:label "fournit le service"@fr ;
+    rdfs:domain res:Equipement ;
+    rdfs:range res:Service ;
+    rdfs:comment "Service exposé par un équipement (typiquement un serveur)."@fr .
+
+res:utiliseProtocole a owl:ObjectProperty ;
+    rdfs:label "utilise le protocole"@fr ;
+    rdfs:domain res:ElementReseau ;
+    rdfs:range res:Protocole ;
+    rdfs:comment "Protocole mis en œuvre par un élément du réseau."@fr .
+
+#################################################################
+#    Propriétés de données
+#################################################################
+
+res:nom a owl:DatatypeProperty ;
+    rdfs:label "nom"@fr ;
+    rdfs:domain res:ElementReseau ;
+    rdfs:range xsd:string ;
+    rdfs:comment "Nom courant / hostname de l'élément."@fr .
+
+res:identifiant a owl:DatatypeProperty ;
+    rdfs:label "identifiant"@fr ;
+    rdfs:range xsd:string ;
+    rdfs:comment "Identifiant technique unique (inventaire, CMDB...)."@fr .
+
+res:fabricant a owl:DatatypeProperty ;
+    rdfs:label "fabricant"@fr ;
+    rdfs:domain res:Equipement ;
+    rdfs:range xsd:string .
+
+res:modele a owl:DatatypeProperty ;
+    rdfs:label "modèle"@fr ;
+    rdfs:domain res:Equipement ;
+    rdfs:range xsd:string .
+
+res:versionLogiciel a owl:DatatypeProperty ;
+    rdfs:label "version logicielle"@fr ;
+    rdfs:domain res:Equipement ;
+    rdfs:range xsd:string .
+
+res:actif a owl:DatatypeProperty ;
+    rdfs:label "actif"@fr ;
+    rdfs:range xsd:boolean ;
+    rdfs:comment "Indique si l'élément est en service."@fr .
+
+res:numeroPort a owl:DatatypeProperty ;
+    rdfs:label "numéro de port"@fr ;
+    rdfs:domain res:InterfacePhysique ;
+    rdfs:range xsd:integer .
+
+res:debitMbps a owl:DatatypeProperty ;
+    rdfs:label "débit (Mbit/s)"@fr ;
+    rdfs:range xsd:decimal ;
+    rdfs:comment "Débit nominal en mégabits par seconde."@fr .
+
+res:valeurAdresse a owl:DatatypeProperty ;
+    rdfs:label "valeur d'adresse"@fr ;
+    rdfs:domain res:Adresse ;
+    rdfs:range xsd:string ;
+    rdfs:comment "Représentation textuelle de l'adresse (ex. 192.168.1.1, 00:1A:2B:3C:4D:5E)."@fr .
+
+res:prefixeCIDR a owl:DatatypeProperty ;
+    rdfs:label "préfixe CIDR"@fr ;
+    rdfs:domain res:SousReseau ;
+    rdfs:range xsd:integer ;
+    rdfs:comment "Longueur du préfixe réseau (ex. 24 pour /24)."@fr .
+
+res:adresseReseau a owl:DatatypeProperty ;
+    rdfs:label "adresse réseau"@fr ;
+    rdfs:domain res:SousReseau ;
+    rdfs:range xsd:string ;
+    rdfs:comment "Adresse de base du sous-réseau (ex. 192.168.10.0)."@fr .
+
+res:numeroVLAN a owl:DatatypeProperty ;
+    rdfs:label "numéro de VLAN"@fr ;
+    rdfs:domain res:VLAN ;
+    rdfs:range xsd:integer ;
+    rdfs:comment "Identifiant 802.1Q (1–4094)."@fr .

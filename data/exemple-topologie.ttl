@@ -1,0 +1,112 @@
+@prefix res:  <http://example.org/reseau/v0#> .
+@prefix ex:   <http://example.org/reseau/v0/instances#> .
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+
+# Petite topologie de démonstration :
+#   [Site Paris] héberge un routeur et un commutateur.
+#   Le routeur (R1) est relié au commutateur (SW1) par un lien filaire.
+#   Deux terminaux sont raccordés à SW1, dans le VLAN 10 / sous-réseau 192.168.10.0/24.
+
+#################################################################
+#    Localisation
+#################################################################
+
+ex:SiteParis a res:Site ;
+    res:nom "Datacenter Paris" .
+
+#################################################################
+#    Réseaux logiques
+#################################################################
+
+ex:VLAN10 a res:VLAN ;
+    res:nom "VLAN-Bureautique" ;
+    res:numeroVLAN 10 .
+
+ex:Subnet10 a res:SousReseau ;
+    res:nom "LAN Bureautique" ;
+    res:adresseReseau "192.168.10.0" ;
+    res:prefixeCIDR 24 .
+
+#################################################################
+#    Équipements
+#################################################################
+
+ex:R1 a res:Routeur ;
+    res:nom "R1-PARIS" ;
+    res:fabricant "Cisco" ;
+    res:modele "ISR 4321" ;
+    res:actif true ;
+    res:localiseA ex:SiteParis ;
+    res:possedeInterface ex:R1-Gi0-0 .
+
+ex:SW1 a res:Commutateur ;
+    res:nom "SW1-PARIS" ;
+    res:fabricant "Cisco" ;
+    res:modele "Catalyst 9200" ;
+    res:actif true ;
+    res:localiseA ex:SiteParis ;
+    res:possedeInterface ex:SW1-Gi1-0-1 , ex:SW1-Gi1-0-2 , ex:SW1-Gi1-0-24 .
+
+ex:PC1 a res:Terminal ;
+    res:nom "poste-marketing-01" ;
+    res:possedeInterface ex:PC1-eth0 .
+
+ex:PC2 a res:Terminal ;
+    res:nom "poste-marketing-02" ;
+    res:possedeInterface ex:PC2-eth0 .
+
+#################################################################
+#    Interfaces + adresses
+#################################################################
+
+ex:R1-Gi0-0 a res:InterfacePhysique ;
+    res:nom "GigabitEthernet0/0" ;
+    res:numeroPort 1 ;
+    res:debitMbps 1000 ;
+    res:appartientAuReseau ex:Subnet10 ;
+    res:aAdresse ex:ipR1 , ex:macR1 ;
+    res:connecteA ex:SW1-Gi1-0-24 .
+
+ex:SW1-Gi1-0-24 a res:InterfacePhysique ;
+    res:nom "GigabitEthernet1/0/24" ;
+    res:numeroPort 24 ;
+    res:debitMbps 1000 ;
+    res:connecteA ex:R1-Gi0-0 .
+
+ex:SW1-Gi1-0-1 a res:InterfacePhysique ;
+    res:nom "GigabitEthernet1/0/1" ;
+    res:numeroPort 1 ;
+    res:appartientAuReseau ex:VLAN10 .
+
+ex:SW1-Gi1-0-2 a res:InterfacePhysique ;
+    res:nom "GigabitEthernet1/0/2" ;
+    res:numeroPort 2 ;
+    res:appartientAuReseau ex:VLAN10 .
+
+ex:PC1-eth0 a res:InterfacePhysique ;
+    res:nom "eth0" ;
+    res:appartientAuReseau ex:Subnet10 , ex:VLAN10 ;
+    res:aAdresse ex:ipPC1 ;
+    res:connecteA ex:SW1-Gi1-0-1 .
+
+ex:PC2-eth0 a res:InterfacePhysique ;
+    res:nom "eth0" ;
+    res:appartientAuReseau ex:Subnet10 , ex:VLAN10 ;
+    res:aAdresse ex:ipPC2 ;
+    res:connecteA ex:SW1-Gi1-0-2 .
+
+ex:ipR1  a res:AdresseIPv4 ; res:valeurAdresse "192.168.10.1" .
+ex:ipPC1 a res:AdresseIPv4 ; res:valeurAdresse "192.168.10.11" .
+ex:ipPC2 a res:AdresseIPv4 ; res:valeurAdresse "192.168.10.12" .
+ex:macR1 a res:AdresseMAC  ; res:valeurAdresse "00:1A:2B:3C:4D:5E" .
+
+#################################################################
+#    Lien physique
+#################################################################
+
+ex:Lien-R1-SW1 a res:LienFilaire ;
+    res:nom "Uplink R1 <-> SW1" ;
+    res:debitMbps 1000 ;
+    res:aExtremite ex:R1-Gi0-0 , ex:SW1-Gi1-0-24 .

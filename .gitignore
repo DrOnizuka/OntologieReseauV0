@@ -1,0 +1,19 @@
+# Protégé
+catalog-v001.xml
+*.ttl~
+*.owl~
+*.bak
+
+# Systèmes d'exploitation
+.DS_Store
+Thumbs.db
+
+# Éditeurs / IDE
+.idea/
+.vscode/
+*.swp
+
+# Secrets / variables d'environnement — NE JAMAIS COMMITER
+.env
+.env.*
+!.env.example
