@@ -75,10 +75,14 @@ PY
 
 ## Statut
 
-**Phase 0 (cadrage) en cours** : périmètre et utilisateurs cibles arrêtés, il
-reste à valider les questions de compétence. Le `.ttl` présent (37 concepts)
-est un **brouillon exploratoire** à reprendre en phases 2–3, pas la V0 validée.
-Voir `TODO.md` et `docs/feuille-de-route.md`.
+**Phases 0 et 1 ✅ validées le 2026-08-27.** Phase 0 : périmètre, exclusions,
+profils utilisateurs, **19 questions de compétence** et décisions de modélisation
+induites (budget cible 37/50). Phase 1 : tableau des sources arrêté, stratégie
+d'**alignement léger** (pas d'`owl:imports`), alignement NML sur les 3 classes
+pivots, DCMI Terms retenu, NetBox en checklist, SKOS écarté de la V0.
+**Prochaine étape : phase 2 — conceptualisation.** Le `.ttl` présent
+(37 concepts) reste un **brouillon exploratoire** à reprendre en phases 2–3,
+pas la V0 validée. Voir `docs/phases/`, `TODO.md` et `docs/feuille-de-route.md`.
 
 ## Pratiques du projet
 

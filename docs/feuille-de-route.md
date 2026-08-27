@@ -10,8 +10,8 @@ Chaque phase dispose d'un document de travail dédié dans `docs/phases/`.
 
 | # | Phase | Fiche de travail | Jalon de validation | Statut |
 |---|-------|------------------|---------------------|--------|
-| 0 | Cadrage & spécification (ORSD) | [phase-0-cadrage.md](phases/phase-0-cadrage.md) | Spécification validée : périmètre + CQ + utilisateurs | 🟡 En cours |
-| 1 | Étude de l'existant & réutilisation | [phase-1-existant.md](phases/phase-1-existant.md) | Tableau des sources décidé (reprise/écartée + raison) | ⬜ À faire |
+| 0 | Cadrage & spécification (ORSD) | [phase-0-cadrage.md](phases/phase-0-cadrage.md) | Spécification validée : périmètre + CQ + utilisateurs | ✅ Validé |
+| 1 | Étude de l'existant & réutilisation | [phase-1-existant.md](phases/phase-1-existant.md) | Tableau des sources décidé (reprise/écartée + raison) | ✅ Validé |
 | 2 | Conceptualisation (modèle informel) | [phase-2-conceptualisation.md](phases/phase-2-conceptualisation.md) | Modèle validé, ≤ 50 concepts, 0 hors-périmètre | ⬜ À faire |
 | 3 | Formalisation OWL (Turtle) | [phase-3-formalisation.md](phases/phase-3-formalisation.md) | `.ttl` parse + raisonneur *consistent* | ⬜ À faire |
 | 4 | Peuplement d'exemple (ABox) | [phase-4-peuplement.md](phases/phase-4-peuplement.md) | Instances chargées sans erreur | ⬜ À faire |
@@ -35,8 +35,20 @@ Après la release V0, toute évolution du modèle repasse par les phases **2 →
 
 ## État actuel
 
-Un socle `ontology/reseau-v0.ttl` (37 concepts) existe déjà mais a été produit
-**avant** les phases 0–1 : il est traité comme **brouillon exploratoire**, à
-reprendre/valider une fois le cadrage et l'étude de l'existant faits.
+**Phase 0 validée le 2026-08-27** : périmètre et exclusions arrêtés, profils
+utilisateurs identifiés, **19 questions de compétence** figées (voir
+[phase-0-cadrage.md](phases/phase-0-cadrage.md)). La validation a aussi produit
+des **décisions de modélisation** à appliquer en phases 2–3–4, avec un budget
+prévisionnel de **37 / 50 concepts**.
 
-> **Prochaine étape : Phase 0 — Cadrage & spécification.**
+Un socle `ontology/reseau-v0.ttl` (37 concepts) existe déjà mais a été produit
+**avant** les phases 0–1 : il reste un **brouillon exploratoire**, à
+reprendre/valider une fois l'étude de l'existant faite.
+
+**Phase 1 validée le 2026-08-27** : tableau des sources arrêté (voir
+[phase-1-existant.md](phases/phase-1-existant.md)). Stratégie retenue :
+**alignement léger** (pas d'`owl:imports`), alignement `rdfs:subClassOf` de nos
+trois classes pivots sur **NML**, **DCMI Terms** pour les métadonnées, **NetBox**
+en checklist de couverture. SKOS écarté de la V0.
+
+> **Prochaine étape : Phase 2 — Conceptualisation.**
