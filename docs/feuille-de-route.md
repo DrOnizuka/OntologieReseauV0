@@ -13,7 +13,7 @@ Chaque phase dispose d'un document de travail dédié dans `docs/phases/`.
 | 0 | Cadrage & spécification (ORSD) | [phase-0-cadrage.md](phases/phase-0-cadrage.md) | Spécification validée : périmètre + CQ + utilisateurs | ✅ Validé |
 | 1 | Étude de l'existant & réutilisation | [phase-1-existant.md](phases/phase-1-existant.md) | Tableau des sources décidé (reprise/écartée + raison) | ✅ Validé |
 | 2 | Conceptualisation (modèle informel) | [phase-2-conceptualisation.md](phases/phase-2-conceptualisation.md) | Modèle validé, ≤ 50 concepts, 0 hors-périmètre | 🟡 En cours |
-| 3 | Formalisation OWL (Turtle) | [phase-3-formalisation.md](phases/phase-3-formalisation.md) | `.ttl` parse + raisonneur *consistent* | ⬜ À faire |
+| 3 | Formalisation OWL (Turtle) | [phase-3-formalisation.md](phases/phase-3-formalisation.md) | `.ttl` parse + raisonneur *consistent* | 🟡 En cours |
 | 4 | Peuplement d'exemple (ABox) | [phase-4-peuplement.md](phases/phase-4-peuplement.md) | Instances chargées sans erreur | ⬜ À faire |
 | 5 | Évaluation & non-régression | [phase-5-evaluation.md](phases/phase-5-evaluation.md) | CQ couvertes (SPARQL) + SHACL valide | ⬜ À faire |
 | 6 | Documentation & release V0 | [phase-6-documentation-release.md](phases/phase-6-documentation-release.md) | Tag `v0.1.0`, doc cohérente | ⬜ À faire |

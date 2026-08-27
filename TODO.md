@@ -18,8 +18,13 @@ la [feuille de route](docs/feuille-de-route.md)). Cocher une fois faites.
   Glossaire, concepts, relations, attributs, schéma Mermaid, traçabilité CQ, contrôle du plafond (37/50) et du périmètre.
   Décisions de modélisation appliquées (retraits sans-fil + `LienFilaire`, ajout `LienLAN`/`LienWAN`, `porteePar`, `typeSupport`).
   **Jalon : prêt pour phase 3 (formalisation OWL)**.
-- [ ] **Phase 3 — Formalisation OWL** : reprendre/valider `ontology/reseau-v0.ttl`
-  (parse + raisonneur *consistent*).
+- [x] **Phase 3 — Formalisation OWL** — Turtle écrit et validé (syntaxe, plafond) :
+  - [x] Turtle complet : 25 classes + 12 ObjectProperties + 12 DatatypeProperties
+  - [x] Métadonnées DCMI Terms en en-tête
+  - [x] Alignements NML commentés (en attente de vérification GFD.206)
+  - [x] Syntaxe ✅, plafond 37/50 ✅
+  - [ ] Raisonneur : HermiT dans Protégé → *à faire (pas d'outil local)* 
+  - [ ] Vérification URIs NML → *en attente de GFD.206*
 - [ ] **Phase 4 — Peuplement d'exemple** : mettre `data/` en cohérence avec le modèle validé.
 - [ ] **Phase 5 — Évaluation & non-régression** : une requête SPARQL par CQ +
   contraintes SHACL (dossier `shapes/` à créer).

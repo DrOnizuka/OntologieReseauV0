@@ -2,7 +2,7 @@
 
 > Retour à la [feuille de route](../feuille-de-route.md) · Consignes : [consignes-construction.md](../consignes-construction.md)
 
-**Statut : ⬜ À faire**
+**Statut : 🟡 En cours** (Turtle écrit, syntaxe vérifiée, plafond validé — en attente raisonneur)
 
 ## Objectif
 
@@ -15,14 +15,16 @@ dans `ontology/`, avec définitions, hiérarchie, domaines/portées et axiomes.
 
 ## Tâches
 
-- [ ] En-tête d'ontologie : IRI, `owl:versionIRI`, `owl:versionInfo`, métadonnées Dublin Core.
-- [ ] Déclarer les **classes** + hiérarchie `rdfs:subClassOf`.
-- [ ] Déclarer les **ObjectProperties** avec `rdfs:domain` / `rdfs:range`.
-- [ ] Déclarer les **DatatypeProperties** avec types XSD.
-- [ ] Caractéristiques (`Functional`, `Symmetric`, `inverseOf`) **si toujours vraies**.
-- [ ] **Disjonctions** (`owl:disjointWith` / `AllDisjointClasses`) pertinentes.
-- [ ] `rdfs:label`@fr + `rdfs:comment`@fr sur **chaque** entité.
-- [ ] Réutiliser les vocabulaires retenus en phase 1 (pas de redéfinition).
+- [x] En-tête d'ontologie : IRI, `owl:versionIRI`, `owl:versionInfo`, métadonnées Dublin Core ✅
+- [x] Déclarer les **classes** + hiérarchie `rdfs:subClassOf` (25 classes) ✅
+- [x] Déclarer les **ObjectProperties** avec `rdfs:domain` / `rdfs:range` (12 ObjectProperties) ✅
+- [x] Déclarer les **DatatypeProperties** avec types XSD (12 DatatypeProperties) ✅
+- [x] Caractéristiques (`Functional`, `Symmetric`, `inverseOf`) **si toujours vraies** ✅
+- [x] **Disjonctions** (`owl:disjointWith` / `AllDisjointClasses`) pertinentes ✅
+- [x] `rdfs:label`@fr + `rdfs:comment`@fr sur **chaque** entité ✅
+- [x] Réutiliser les vocabulaires retenus en phase 1 (alignement NML, DCMI Terms) ✅
+- [ ] **Vérifier alignement NML** : confirmer URIs dans GFD.206, valider au raisonneur → *en attente*
+- [ ] **Valider au raisonneur** (HermiT dans Protégé) : 0 classe incohérente → *en attente*
 
 ## Vérifications
 

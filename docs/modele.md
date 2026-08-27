@@ -269,7 +269,7 @@ Nouveau total: 24 classes + 13 ObjectProperties = 37
 
 #### 3. Décompte final par catégorie
 
-**Classes** (24) :
+**Classes** (25) :
 1. ElementReseau
 2. Equipement
 3. Routeur
@@ -295,7 +295,7 @@ Nouveau total: 24 classes + 13 ObjectProperties = 37
 23. Protocole
 24. Site *(contextuel, ne dérive pas d'ElementReseau)*
 
-**ObjectProperties** (13) :
+**ObjectProperties** (12) :
 1. possedeInterface
 2. interfaceDe
 3. aExtremite
@@ -310,7 +310,7 @@ Nouveau total: 24 classes + 13 ObjectProperties = 37
 12. utiliseProtocole
 13. (Zone n'a pas d'inverse nommé, `appartientAZone` lui suffit)
 
-**Total** : 24 + 13 = **37 / 50** ✅
+**Total** : 25 + 12 = **37 / 50** ✅
 
 **Marge disponible** : 50 − 37 = **13 concepts**
 
