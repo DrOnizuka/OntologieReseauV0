@@ -9,13 +9,15 @@ la [feuille de route](docs/feuille-de-route.md)). Cocher une fois faites.
 
 ## Avancement des phases (feuille de route)
 
-- [ ] **Clôturer la phase 0 — Cadrage** : valider les questions de compétence
-  (brouillon de 15 CQ dans [`docs/phases/phase-0-cadrage.md`](docs/phases/phase-0-cadrage.md)).
-  Périmètre et utilisateurs déjà arrêtés → il ne reste que la validation des CQ. → *phase 0 (🟡 en cours)*.
-- [ ] **Phase 1 — Étude de l'existant & réutilisation** : recenser les
-  ontologies/représentations réseau, décider reprise/écartée + justification. → *après clôture phase 0*.
-- [ ] **Phase 2 — Conceptualisation** : modèle informel (glossaire, concepts,
+- [x] **Clôturer la phase 0 — Cadrage** : périmètre, utilisateurs et **19 CQ**
+  validés le 2026-08-27 (voir [`docs/phases/phase-0-cadrage.md`](docs/phases/phase-0-cadrage.md)). → *phase 0 (✅ validée)*.
+- [x] **Phase 1 — Étude de l'existant & réutilisation** : tableau des sources
+  arrêté le 2026-08-27, stratégie d'**alignement léger** retenue
+  (voir [`docs/phases/phase-1-existant.md`](docs/phases/phase-1-existant.md)). → *phase 1 (✅ validée)*.
+- [ ] **Phase 2 — Conceptualisation** *(prochaine étape)* : modèle informel (glossaire, concepts,
   relations, schéma), contrôle du plafond ≤ 50 et du périmètre. Réécrire `docs/modele.md`.
+  Appliquer les **décisions de modélisation** arrêtées en phase 0 (retraits sans-fil
+  + `LienFilaire`, ajout `LienLAN`/`LienWAN`, `porteePar`, `typeSupport`) — budget cible 37/50.
 - [ ] **Phase 3 — Formalisation OWL** : reprendre/valider `ontology/reseau-v0.ttl`
   (parse + raisonneur *consistent*).
 - [ ] **Phase 4 — Peuplement d'exemple** : mettre `data/` en cohérence avec le modèle validé.
@@ -28,11 +30,42 @@ la [feuille de route](docs/feuille-de-route.md)). Cocher une fois faites.
 > (voir [`docs/feuille-de-route.md`](docs/feuille-de-route.md)). Mettre à jour le
 > statut de la phase (fiche + tableau de la feuille de route) au fur et à mesure.
 
+## Suites de la validation des CQ (phase 0 → phases 2-3-4)
+
+- [ ] **Trancher le sort de `actif`** (DatatypeProperty) : aucune CQ ne le
+  couvre depuis que la CQ « éléments hors service » a été écartée. Le retirer,
+  ou le justifier par une CQ. La règle « pas de propriété sans ≥ 1 CQ » s'applique. → *phase 2*.
+- [ ] **Désambiguïser `numeroPort`** : le brouillon l'emploie pour le port
+  physique (`InterfacePhysique`), alors que CQ13 réclame le **port de transport**
+  d'un service. Deux propriétés distinctes, nommées sans ambiguïté. → *phase 3*.
+- [ ] **Contrainte SHACL sur `typeSupport`** : vocabulaire fermé
+  (cuivre, fibre-monomode, fibre-multimode) porté par CQ19. → *phase 5*.
+- [ ] **Retyper `data/exemple-topologie.ttl:109`** : instance de `res:LienFilaire`,
+  classe supprimée → `LienLAN` ou `LienWAN`. → *phase 4*.
+
+## Suites de la phase 1 (réutilisation)
+
+- [ ] **Vérifier les URI NML** dans [GFD.206](https://ogf.org/documents/GFD.206.pdf)
+  avant d'écrire l'alignement : existence et forme exactes de
+  `nml:BidirectionalPort` / `nml:BidirectionalLink`, et espace de noms NML à
+  employer. Aucun axiome d'alignement n'est écrit tant que ce n'est pas confirmé. → *phase 3*.
+- [ ] **Contrôler les alignements au raisonneur** : un alignement erroné est une
+  cause classique d'incohérence. → *phase 3*.
+- [ ] **Passer le modèle au crible de NetBox** (Site, Device, Interface, Cable,
+  VLAN, Prefix, IPAddress) comme contrôle de complétude — sans recopier son
+  périmètre plus large (racks, circuits, tenants, VRF). → *phase 2*.
+- [ ] **Déclarer les métadonnées DCMI Terms** sur l'ontologie
+  (`creator`, `license`, `created`, `modified`). → *phase 3, complété en phase 6*.
+- [ ] *(V1, si besoin)* **Reconsidérer SKOS** pour les vocabulaires contrôlés si
+  `typeSupport` doit s'étoffer ou devenir multilingue — impliquerait de le
+  passer en ObjectProperty (+1 concept).
+- [ ] *(optionnel)* Vérifier **IANAifType-MIB / IF-MIB (RFC 2863)** comme source
+  de vocabulaire normalisé pour les types d'interface / de support. → *phase 2*.
+
 ## Cohérence / dette documentaire
 
-- [ ] **Requalifier `CHANGELOG.md`** : la « [0.1.0] » y est présentée comme
-  livrée alors que le `.ttl` est un brouillon exploratoire. La marquer
-  « pré-V0 / brouillon » jusqu'à la vraie release. → *à faire en phase 6, ou avant si besoin de clarté*.
+- [x] **Requalifier `CHANGELOG.md`** : la « [0.1.0] » est désormais marquée
+  « ⚠️ brouillon pré-V0 (non validé) ». Le tag `v0.1.0` sera posé en phase 6.
 - [ ] **Marquer comme provisoires** `ontology/reseau-v0.ttl`,
   `data/exemple-topologie.ttl` et `docs/modele.md` (brouillons produits avant
   le cadrage). → *rattaché aux phases 2–3–4*.
