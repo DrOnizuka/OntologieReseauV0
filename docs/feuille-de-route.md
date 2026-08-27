@@ -12,7 +12,7 @@ Chaque phase dispose d'un document de travail dédié dans `docs/phases/`.
 |---|-------|------------------|---------------------|--------|
 | 0 | Cadrage & spécification (ORSD) | [phase-0-cadrage.md](phases/phase-0-cadrage.md) | Spécification validée : périmètre + CQ + utilisateurs | ✅ Validé |
 | 1 | Étude de l'existant & réutilisation | [phase-1-existant.md](phases/phase-1-existant.md) | Tableau des sources décidé (reprise/écartée + raison) | ✅ Validé |
-| 2 | Conceptualisation (modèle informel) | [phase-2-conceptualisation.md](phases/phase-2-conceptualisation.md) | Modèle validé, ≤ 50 concepts, 0 hors-périmètre | ⬜ À faire |
+| 2 | Conceptualisation (modèle informel) | [phase-2-conceptualisation.md](phases/phase-2-conceptualisation.md) | Modèle validé, ≤ 50 concepts, 0 hors-périmètre | 🟡 En cours |
 | 3 | Formalisation OWL (Turtle) | [phase-3-formalisation.md](phases/phase-3-formalisation.md) | `.ttl` parse + raisonneur *consistent* | ⬜ À faire |
 | 4 | Peuplement d'exemple (ABox) | [phase-4-peuplement.md](phases/phase-4-peuplement.md) | Instances chargées sans erreur | ⬜ À faire |
 | 5 | Évaluation & non-régression | [phase-5-evaluation.md](phases/phase-5-evaluation.md) | CQ couvertes (SPARQL) + SHACL valide | ⬜ À faire |
@@ -51,4 +51,6 @@ reprendre/valider une fois l'étude de l'existant faite.
 trois classes pivots sur **NML**, **DCMI Terms** pour les métadonnées, **NetBox**
 en checklist de couverture. SKOS écarté de la V0.
 
-> **Prochaine étape : Phase 2 — Conceptualisation.**
+**Phase 2 en cours** : modèle conceptuel finalisé dans `docs/modele.md` — 37/50 concepts,
+19 CQ couvertes, périmètre validé, décisions de modélisation appliquées (retrait sans-fil,
+ajout LienLAN/LienWAN, porteePar pour CQ17, typeSupport pour CQ19).
